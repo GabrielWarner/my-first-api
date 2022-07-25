@@ -2,7 +2,8 @@
 const express = require('express');
 const path = require('path');
 //importing helper function to read from file
-const { readFromFile, readAndAppend } = require('./helpers/fsUtils');
+const { readFromFile } = require('./helpers/fsUtils');
+const fs = require('fs')
 
 //initialize app
 const app = express();
@@ -31,13 +32,30 @@ app.get ('/api/family', (req, res) => {
 //post request to add family member object to database
 app.post('/api/family', (req, res) => {
   const { name, relation } = req.body
+  console.log(req.body)
   if(req.body){
     const newFam = {
       name,
       relation
     }
-    readAndAppend(newFam, './db/db.json')
-    console.log('success')
+    fs.readFile("./db/db.json", "utf8", (err, data) => {
+      if (err) {
+        throw err;
+      } else {
+        const members = JSON.parse(data);
+        members.push(newFam);
+        fs.writeFile(
+          "./db/db.json",
+          JSON.stringify(members, null, 4),
+          (err, data) => {
+            if (err) {
+              throw err;
+            }
+            res.json({ data: req.body, message: "success!" });
+          }
+        );
+      }
+    });
   }else{
     res.error('error')
   }
