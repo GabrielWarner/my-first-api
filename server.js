@@ -8,7 +8,7 @@ const fs = require('fs')
 //initialize app
 const app = express();
 //setting a constant port number
-const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 
 //telling express to use the static folder called public
 app.use(express.static('public'));
@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //get request for sending back the index.html
 app.get('/', (req, res) =>
-  res.sendFile(path.join(__dirname, './index.html'))
+  res.sendFile(path.join(__dirname, './public/index.html'))
 );
 
 //get request for my family API
