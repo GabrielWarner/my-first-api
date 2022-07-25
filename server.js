@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //get request for sending back the index.html
 app.get('/', (req, res) =>
-  res.sendFile(path.join(__dirname, '/public/index.html'))
+  res.sendFile(path.join(__dirname, './index.html'))
 );
 
 //get request for my family API
@@ -28,7 +28,25 @@ app.get ('/api/family', (req, res) => {
     readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)))
 })
 
+//post request to add family member object to database
+app.post('/api/family', (req, res) => {
+  const { name, relation } = req.body
+  if(req.body){
+    const newFam = {
+      name,
+      relation
+    }
+    readAndAppend(newFam, './db/db.json')
+    console.log('success')
+  }else{
+    res.error('error')
+  }
+})
+
+
+
 //set the app to listen to PORT constant
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT} 🚀`)
 );
+
